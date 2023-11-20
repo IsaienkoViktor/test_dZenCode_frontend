@@ -14,7 +14,7 @@ body {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   font-style: normal;
-  font-weight: 300;
+  font-weight: 400;
   line-height: normal;
   color: #000000;
 }

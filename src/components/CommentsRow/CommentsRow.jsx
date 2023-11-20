@@ -1,17 +1,17 @@
 import PropTypes from "prop-types";
 import { formatDate } from "../../helpers/formatDate";
-import { Link } from "react-router-dom";
+import { StyledLink, StyledTableRow } from "./CommentsRow.styled";
 
 export const CommentsRow = ({ comment }) => {
   return (
-    <tr>
+    <StyledTableRow>
       <td>
-        <Link to={`/${comment._id}`}>{comment.text}</Link>
+        <StyledLink to={`/${comment._id}`}>{comment.text}</StyledLink>
       </td>
       <td>{comment.userName}</td>
       <td>{comment.email}</td>
       <td>{formatDate(comment.createdAt)}</td>
-    </tr>
+    </StyledTableRow>
   );
 };
 

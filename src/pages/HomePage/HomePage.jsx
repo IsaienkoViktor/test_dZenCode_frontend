@@ -5,10 +5,17 @@ import { Container } from "../../shared/components/Container/Container";
 
 const HomePage = () => {
   const [page, setPage] = useState(1);
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [createdAt, setCreatedAt] = useState("desc");
+  const [userName, setUserName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [createdAt, setCreatedAt] = useState("asc");
   const [comments, setComments] = useState([]);
+
+  const setters = {
+    userName: setUserName,
+    email: setEmail,
+    createdAt: setCreatedAt,
+  };
+  const values = { userName, email, createdAt };
 
   useEffect(() => {
     getAllComments({
@@ -24,7 +31,7 @@ const HomePage = () => {
 
   return (
     <Container>
-      <CommentsTable data={comments} />
+      <CommentsTable data={comments} values={values} setters={setters} />
     </Container>
   );
 };
