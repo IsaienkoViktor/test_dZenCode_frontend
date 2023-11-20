@@ -11,14 +11,14 @@ export const getAllComments = async ({
   email,
   createdAt,
 }) => {
-  const data = await instance.get("/comment/all", {
+  const { data } = await instance.get("/comment/all", {
     params: { page, limit, userName, email, createdAt },
   });
   return data;
 };
 
 export const getCommentById = async (id) => {
-  const data = await instance.get(`/comment/${id}`);
+  const { data } = await instance.get(`/comment/${id}`);
   return data;
 };
 
