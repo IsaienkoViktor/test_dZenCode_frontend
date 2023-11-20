@@ -6,6 +6,7 @@ export const theme = {
     blue: "#002a58",
     red: "#e23131",
     green: "#57d206",
+    lightBlue: "#1e07eb",
   },
 
   spacing: (value) => `${4 * value}px`,
@@ -13,7 +14,7 @@ export const theme = {
   fontSizes: {
     xss: "12px",
     xs: "18px",
-    s: "24px",
+    s: "20px",
     m: "28px",
     l: "32px",
     xl: "36px",
