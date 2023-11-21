@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getCommentById } from "../../services/api/api";
 import { CommentSection } from "../../components/CommentSection/CommentSection";
 import { Container } from "../../shared/components/Container/Container";
+import { Loader } from "../../shared/components/Loader/Loader";
 
 const CommentPage = () => {
   const [comment, setComment] = useState(null);
@@ -16,7 +17,11 @@ const CommentPage = () => {
 
   return (
     <Container>
-      <CommentSection data={comment} />
+      {comment ? (
+        <CommentSection data={comment} commentId={params?.id} />
+      ) : (
+        <Loader />
+      )}
     </Container>
   );
 };

@@ -28,7 +28,7 @@ export const addComment = async (comment) => {
 };
 
 export const addReply = async ({ reply, commentId, replyToId }) => {
-  const data = await instance.get(`/comment/reply/${commentId}`, reply, {
+  const data = await instance.post(`/comment/reply/${commentId}`, reply, {
     params: { replyToId },
   });
   return data;
