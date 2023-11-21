@@ -1,10 +1,14 @@
 import styled from "styled-components";
 
+import { FaCommentDots } from "react-icons/fa";
+
 export const StyledReply = styled.li`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(4)};
   margin-left: ${({ theme, $index }) => theme.spacing(4 * $index)};
+  border: ${({ theme }) => theme.borders.normal};
+  border-color: ${({ theme }) => theme.colors.grey};
 `;
 
 export const StyledReplyHeader = styled.div`
@@ -39,4 +43,30 @@ export const StyledReplyMessage = styled.p`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+`;
+
+export const StyledBottomBar = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing(3)};
+  padding: 8px 16px;
+`;
+
+export const StyledReplyBtn = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+`;
+
+export const StyledReplyBtnIcon = styled(FaCommentDots)`
+  width: 20px;
+  height: 20px;
+
+  transition: fill ${({ theme }) => theme.transitions.regular};
+
+  &:hover,
+  &:focus {
+    fill: ${({ theme }) => theme.colors.grey};
+  }
 `;
