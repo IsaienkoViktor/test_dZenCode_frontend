@@ -35,7 +35,7 @@ export const addReply = async ({ reply, commentId, replyToId }) => {
 };
 
 export const getCaptcha = async () => {
-  const data = await instance.get("/captcha");
+  const { data } = await instance.get("/captcha");
   return data;
 };
 
