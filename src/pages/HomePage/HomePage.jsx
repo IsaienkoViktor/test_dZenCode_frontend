@@ -6,6 +6,7 @@ import { Button } from "../../shared/components/Button/Button";
 import { Modal } from "../../components/Modal/Modal";
 import { Form } from "../../components/Form/Form";
 import { PageWrapper } from "./Homepage.styled";
+import Captcha from "../../components/Captcha/Captcha";
 
 const HomePage = () => {
   const [page, setPage] = useState(1);
@@ -56,6 +57,7 @@ const HomePage = () => {
         {isModalOpen && (
           <Modal onClose={handleModalClose}>
             <Form handleModalClose={handleModalClose} />
+            <Captcha />
           </Modal>
         )}
       </PageWrapper>

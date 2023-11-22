@@ -14,6 +14,7 @@ import {
 import { Reply } from "../Reply/Reply";
 import { Modal } from "../Modal/Modal";
 import { Form } from "../Form/Form";
+import Captcha from "../Captcha/Captcha";
 
 export const CommentSection = ({ data, commentId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,6 +69,7 @@ export const CommentSection = ({ data, commentId }) => {
             commentId={commentId}
             handleModalClose={handleModalClose}
           />
+          <Captcha/>
         </Modal>
       )}
     </>
