@@ -2,7 +2,6 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL: "https://test-dzencode.onrender.com/api",
-  withCredentials: true,
 });
 
 export const getAllComments = async ({
