@@ -5,8 +5,12 @@ import { FormError } from "../../shared/components/FormError/FormError";
 import { FieldStyled, FormStyled } from "./Form.styled";
 import { Button } from "../../shared/components/Button/Button";
 import { addComment, addReply } from "../../services/api/api";
+import { ReplyButton } from "../../shared/components/ReplyButton/ReplyButton";
+import { useRef } from "react";
+import DOMPurify from "dompurify";
 
 export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
+  const textareaRef = useRef(null);
   const initialValues = {
     userName: "",
     email: "",
@@ -24,14 +28,49 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
     return "";
   };
 
-  const handleSubmit = (value, { resetForm }) => {
-    const { userName, email, comment, homepage } = value;
+  const applyTag = ({ tag, getFieldProps, handleChange }) => {
+    const { name } = getFieldProps("comment");
+    console.log(name);
+
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const { selectionStart, selectionEnd, value } = textarea;
+
+    const selectedText = value.substring(selectionStart, selectionEnd);
+    const tagText = `<${tag}>${selectedText}</${tag}>`;
+
+    const newValue =
+      value.substring(0, selectionStart) +
+      tagText +
+      value.substring(selectionEnd);
+
+    handleChange({
+      target: { name, value: newValue },
+    });
+
+    textarea.value = newValue;
+  };
+  const allowedTags = ["a", "code", "i", "strong"];
+
+  const handleSubmit = (values, { resetForm }) => {
+    const { userName, email, comment, homepage } = values;
+    console.log(values);
+    const sanitizedComment = DOMPurify.sanitize(comment, {
+      ALLOWED_TAGS: allowedTags,
+    });
+    console.log(sanitizedComment);
 
     if (variant === "reply") {
-      const reply = { userName, email, reply: comment, homepage };
+      const reply = {
+        userName,
+        email,
+        reply: comment,
+        homepage,
+      };
       addReply({ reply, commentId, replyToId });
     } else {
-      addComment({ userName, email, text: comment, homepage })
+      addComment({ userName, email, text: sanitizedComment, homepage })
         .then((data) => console.log(data))
         .catch((error) => console.log(error));
     }
@@ -45,7 +84,14 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ touched, errors, values, handleChange, handleBlur }) => (
+      {({
+        getFieldProps,
+        touched,
+        errors,
+        values,
+        handleChange,
+        handleBlur,
+      }) => (
         <FormStyled autoComplete="off">
           <FieldStyled
             type="text"
@@ -74,6 +120,9 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
             className={getClassName(touched.homepage, errors.homepage)}
           />
           <FormError name="homepage" touched={touched} errors={errors} />
+          <ReplyButton
+            applyTag={(tag) => applyTag({ tag, getFieldProps, handleChange })}
+          />
           <FieldStyled
             as="textarea"
             name="comment"
@@ -84,9 +133,10 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
             onBlur={handleBlur}
             className={getClassName(touched.comment, errors.comment)}
             $variant="textarea"
+            ref={textareaRef}
           />
           <FormError name="comment" touched={touched} errors={errors} />
-          <Button type="submit" text="Leave comment" onClick={handleSubmit} />
+          <Button type="submit" text="Leave comment" />
         </FormStyled>
       )}
     </Formik>
