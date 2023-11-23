@@ -4,7 +4,6 @@ import { getCaptcha, validateCaptcha } from "../../services/api/api";
 
 const Captcha = () => {
   const [captcha, setCaptcha] = useState(null);
-  console.log(captcha);
 
   const fetchCaptcha = () => {
     getCaptcha()
@@ -21,7 +20,7 @@ const Captcha = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const userCaptcha = { captcha: event.target.captcha.value };
-    console.log(userCaptcha);
+
     validateCaptcha(userCaptcha)
       .then((data) => console.log(data))
       .catch((err) => console.log(err));
