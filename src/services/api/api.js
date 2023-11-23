@@ -40,11 +40,7 @@ export const getCaptcha = async () => {
   return data;
 };
 
-export const validateCaptcha = async (captcha) => {
-  const data = await instance.post("/captcha/validate", captcha, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+export const validateCaptcha = async ({ captcha, sessionId }) => {
+  const data = await instance.post("/captcha/validate", { captcha, sessionId });
   return data;
 };

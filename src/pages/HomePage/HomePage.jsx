@@ -15,6 +15,7 @@ const HomePage = () => {
   const [createdAt, setCreatedAt] = useState("asc");
   const [comments, setComments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
 
   const setters = {
     userName: setUserName,
@@ -56,8 +57,9 @@ const HomePage = () => {
         />
         {isModalOpen && (
           <Modal onClose={handleModalClose}>
-            <Form handleModalClose={handleModalClose} />
-            <Captcha />
+            <Form
+              handleModalClose={handleModalClose}              
+            />            
           </Modal>
         )}
       </PageWrapper>

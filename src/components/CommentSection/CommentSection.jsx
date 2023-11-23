@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import parse from "html-react-parser";
 import { useState } from "react";
 import { formatDate } from "../../helpers/formatDate";
 import {
@@ -43,7 +44,7 @@ export const CommentSection = ({ data, commentId }) => {
                 <StyledUserName>{data.userName}</StyledUserName>
                 <p>{formatDate(data.createdAt)}</p>
               </StyledCommentHeader>
-              <StyledMessage>{data.text}</StyledMessage>
+              <StyledMessage>{parse(data.text)}</StyledMessage>
               <StyledReplyBtn onClick={() => handleModalOpen(data._id)}>
                 <StyledReplyBtnIcon />
               </StyledReplyBtn>
@@ -69,7 +70,7 @@ export const CommentSection = ({ data, commentId }) => {
             commentId={commentId}
             handleModalClose={handleModalClose}
           />
-          <Captcha/>
+          <Captcha />
         </Modal>
       )}
     </>

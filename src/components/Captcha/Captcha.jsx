@@ -1,14 +1,17 @@
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import parse from "html-react-parser";
 import { getCaptcha, validateCaptcha } from "../../services/api/api";
 
-const Captcha = () => {
+const Captcha = ({ setIsCaptchaPassed }) => {
   const [captcha, setCaptcha] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
 
   const fetchCaptcha = () => {
     getCaptcha()
       .then((data) => {
-        setCaptcha(data);
+        setCaptcha(data.captcha);
+        setSessionId(data.sessionId);
       })
       .catch((err) => console.log("Error fetching the CAPTCHA", err));
   };
@@ -19,10 +22,10 @@ const Captcha = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const userCaptcha = { captcha: event.target.captcha.value };
+    const userCaptcha = event.target.captcha.value;
 
-    validateCaptcha(userCaptcha)
-      .then((data) => console.log(data))
+    validateCaptcha({ captcha: userCaptcha, sessionId })
+      .then(() => setIsCaptchaPassed(true))
       .catch((err) => console.log(err));
   };
 
@@ -40,6 +43,10 @@ const Captcha = () => {
       <button onClick={handleRefreshCaptcha}>Обновить CAPTCHA</button>
     </div>
   );
+};
+
+Captcha.propTypes = {
+  setIsCaptchaPassed: PropTypes.func,
 };
 
 export default Captcha;
