@@ -6,11 +6,15 @@ import { FieldStyled, FormStyled } from "./Form.styled";
 import { Button } from "../../shared/components/Button/Button";
 import { addComment, addReply } from "../../services/api/api";
 import { ReplyButton } from "../../shared/components/ReplyButton/ReplyButton";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import DOMPurify from "dompurify";
+import Captcha from "../Captcha/Captcha";
 
 export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
+  const formikRef = useRef(null);
   const textareaRef = useRef(null);
+  const [isCaptchaPassed, setIsCaptchaPassed] = useState(false);
+
   const initialValues = {
     userName: "",
     email: "",
@@ -78,74 +82,90 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
     handleModalClose();
   };
 
+  const handleFormSubmit = () => {
+    console.log(formikRef.current);
+    if (formikRef.current) {
+      formikRef.current.submitForm();
+    }
+  };
+
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({
-        getFieldProps,
-        touched,
-        errors,
-        values,
-        handleChange,
-        handleBlur,
-      }) => (
-        <FormStyled autoComplete="off">
-          <FieldStyled
-            type="text"
-            name="userName"
-            placeholder="User Name"
-            autoComplete="off"
-            required
-            className={getClassName(touched.userName, errors.userName)}
-          />
-          <FormError name="userName" touched={touched} errors={errors} />
-          <FieldStyled
-            type="email"
-            name="email"
-            placeholder="Email"
-            autoComplete="off"
-            required
-            className={getClassName(touched.email, errors.email)}
-          />
-          <FormError name="email" touched={touched} errors={errors} />
-          <FieldStyled
-            type="url"
-            name="homepage"
-            placeholder="Homepage"
-            autoComplete="off"
-            required
-            className={getClassName(touched.homepage, errors.homepage)}
-          />
-          <FormError name="homepage" touched={touched} errors={errors} />
-          <ReplyButton
-            applyTag={(tag) => applyTag({ tag, getFieldProps, handleChange })}
-          />
-          <FieldStyled
-            as="textarea"
-            name="comment"
-            placeholder="Enter your comment..."
-            required
-            value={values.comment}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            className={getClassName(touched.comment, errors.comment)}
-            $variant="textarea"
-            ref={textareaRef}
-          />
-          <FormError name="comment" touched={touched} errors={errors} />
-          <Button type="submit" text="Leave comment" />
-        </FormStyled>
-      )}
-    </Formik>
+    <>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+        innerRef={formikRef}
+      >
+        {({
+          getFieldProps,
+          touched,
+          errors,
+          values,
+          handleChange,
+          handleBlur,
+        }) => (
+          <FormStyled autoComplete="off">
+            <FieldStyled
+              type="text"
+              name="userName"
+              placeholder="User Name"
+              autoComplete="off"
+              required
+              className={getClassName(touched.userName, errors.userName)}
+            />
+            <FormError name="userName" touched={touched} errors={errors} />
+            <FieldStyled
+              type="email"
+              name="email"
+              placeholder="Email"
+              autoComplete="off"
+              required
+              className={getClassName(touched.email, errors.email)}
+            />
+            <FormError name="email" touched={touched} errors={errors} />
+            <FieldStyled
+              type="url"
+              name="homepage"
+              placeholder="Homepage"
+              autoComplete="off"
+              required
+              className={getClassName(touched.homepage, errors.homepage)}
+            />
+            <FormError name="homepage" touched={touched} errors={errors} />
+            <ReplyButton
+              applyTag={(tag) => applyTag({ tag, getFieldProps, handleChange })}
+            />
+            <FieldStyled
+              as="textarea"
+              name="comment"
+              placeholder="Enter your comment..."
+              required
+              value={values.comment}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={getClassName(touched.comment, errors.comment)}
+              $variant="textarea"
+              ref={textareaRef}
+            />
+            <FormError name="comment" touched={touched} errors={errors} />
+          </FormStyled>
+        )}
+      </Formik>
+      <Captcha setIsCaptchaPassed={setIsCaptchaPassed} />
+      <Button
+        type="button"
+        text="Leave comment"
+        disabled={!isCaptchaPassed}
+        onClick={handleFormSubmit}
+      />
+    </>
   );
 };
 
 Form.propTypes = {
-  variant: PropTypes.string,
-  replyToId: PropTypes.string,
   commentId: PropTypes.string,
   handleModalClose: PropTypes.func,
+  replyToId: PropTypes.string,
+  variant: PropTypes.string,
 };

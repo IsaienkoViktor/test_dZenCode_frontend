@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import parse from "html-react-parser";
 import { formatDate } from "../../helpers/formatDate";
 import { StyledLink, StyledTableRow } from "./CommentsRow.styled";
 
@@ -6,7 +7,7 @@ export const CommentsRow = ({ comment }) => {
   return (
     <StyledTableRow>
       <td>
-        <StyledLink to={`/${comment._id}`}>{comment.text}</StyledLink>
+        <StyledLink to={`/${comment._id}`}>{parse(comment.text)}</StyledLink>
       </td>
       <td>{comment.userName}</td>
       <td>{comment.email}</td>

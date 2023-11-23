@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import parse from "html-react-parser";
 import {
   StyledBottomBar,
   StyledReply,
@@ -19,9 +20,9 @@ export const Reply = ({ reply, index, handleModalOpen }) => {
       </StyledReplyHeader>
       <StyledBottomBar>
         <StyledReplyTo>
-          <StyledReplyMessage>{reply.replyTo.text}</StyledReplyMessage>
+          <StyledReplyMessage>{parse(reply.replyTo.text)}</StyledReplyMessage>
         </StyledReplyTo>
-        <p>{reply.reply}</p>
+        <p>{parse(reply.reply)}</p>
         <StyledReplyBtn onClick={() => handleModalOpen(reply._id)}>
           <StyledReplyBtnIcon />
         </StyledReplyBtn>

@@ -17,4 +17,12 @@ export const StyledButton = styled.button`
   &:focus {
     transform: scale(1.03);
   }
+
+  &:disabled {
+    opacity: 0.3;
+    &:hover,
+    &:focus {
+      transform: scale(1);
+    }
+  }
 `;
