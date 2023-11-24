@@ -1,5 +1,6 @@
 import { Field, Form } from "formik";
 import styled, { css } from "styled-components";
+import { IoMdCloudDone } from "react-icons/io";
 
 export const FormStyled = styled(Form)`
   display: flex;
@@ -37,4 +38,17 @@ export const FieldStyled = styled(Field)`
     css`
       height: 100px;
     `};
+`;
+
+export const StyledDoneIcon = styled(IoMdCloudDone)`
+  width: 40px;
+  height: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: ${({ theme }) => theme.spacing(5)};
+  margin-bottom: ${({ theme }) => theme.spacing(5)};
+
+  transition: ${({ theme }) => theme.transitions.regular};
+  transition-duration: 2s;
+  fill: ${({ theme }) => theme.colors.green};
 `;

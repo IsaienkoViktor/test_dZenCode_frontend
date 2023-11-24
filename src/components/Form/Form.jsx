@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Formik } from "formik";
 import { validationSchema } from "../../shared/validation/validationSchema";
 import { FormError } from "../../shared/components/FormError/FormError";
-import { FieldStyled, FormStyled } from "./Form.styled";
+import { FieldStyled, FormStyled, StyledDoneIcon } from "./Form.styled";
 import { Button } from "../../shared/components/Button/Button";
 import { addComment, addReply } from "../../services/api/api";
 import { ReplyButton } from "../../shared/components/ReplyButton/ReplyButton";
@@ -152,7 +152,14 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
           </FormStyled>
         )}
       </Formik>
-      <Captcha setIsCaptchaPassed={setIsCaptchaPassed} />
+      {isCaptchaPassed ? (
+        <StyledDoneIcon />
+      ) : (
+        <Captcha
+          setIsCaptchaPassed={setIsCaptchaPassed}
+          isCaptchaPassed={isCaptchaPassed}
+        />
+      )}
       <Button
         type="button"
         text="Leave comment"
@@ -162,6 +169,7 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
     </>
   );
 };
+StyledDoneIcon;
 
 Form.propTypes = {
   commentId: PropTypes.string,
