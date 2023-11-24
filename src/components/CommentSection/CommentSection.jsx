@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import parse from "html-react-parser";
-import { useState } from "react";
+import { Buffer } from "buffer";
+
+import { useEffect, useState } from "react";
 import { formatDate } from "../../helpers/formatDate";
 import {
   StyledComment,
@@ -20,6 +22,17 @@ import Captcha from "../Captcha/Captcha";
 export const CommentSection = ({ data, commentId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [replyToId, setReplyToId] = useState("");
+  const [imageSrc, setImageSrc] = useState(null);
+
+  useEffect(() => {
+    if (data.image) {
+      const buffer = Buffer.from(data.image.buffer.data);
+      const image = `data:${data.image.mimetype};base64,${buffer.toString(
+        "base64"
+      )}`;
+      setImageSrc(image);
+    }
+  }, [data.image]);
 
   const handleModalOpen = (id) => {
     document.body.style.overflow = "hidden";
@@ -33,7 +46,7 @@ export const CommentSection = ({ data, commentId }) => {
     document.body.style.overflow = "auto";
   };
 
-  console.log(data);
+  console.log(data.image);
   return (
     <>
       <StyledSection>
@@ -45,6 +58,7 @@ export const CommentSection = ({ data, commentId }) => {
                 <p>{formatDate(data.createdAt)}</p>
               </StyledCommentHeader>
               <StyledMessage>{parse(data.text)}</StyledMessage>
+              {imageSrc && <img src={imageSrc} alt={data.text} />}
               <StyledReplyBtn onClick={() => handleModalOpen(data._id)}>
                 <StyledReplyBtnIcon />
               </StyledReplyBtn>
@@ -78,12 +92,18 @@ export const CommentSection = ({ data, commentId }) => {
 };
 
 CommentSection.propTypes = {
+  commentId: PropTypes.string,
   data: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
+    image: PropTypes.shape({
+      buffer: PropTypes.shape({
+        data: PropTypes.any,
+      }),
+      mimetype: PropTypes.any,
+    }),
     replies: PropTypes.array.isRequired,
     text: PropTypes.string.isRequired,
     userName: PropTypes.string.isRequired,
   }).isRequired,
-  commentId: PropTypes.string,
 };
