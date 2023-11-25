@@ -1,6 +1,9 @@
 import { Field, Form } from "formik";
 import styled, { css } from "styled-components";
 import { IoMdCloudDone } from "react-icons/io";
+import { AiOutlineUpload } from "react-icons/ai";
+import { RiFileUploadFill } from "react-icons/ri";
+import { RiImageAddFill } from "react-icons/ri";
 
 export const FormStyled = styled(Form)`
   display: flex;
@@ -38,6 +41,11 @@ export const FieldStyled = styled(Field)`
     css`
       height: 100px;
     `};
+  /* ${({ $variant }) =>
+    $variant === "hidden" &&
+    css`
+      display: none;
+    `}; */
 `;
 
 export const StyledDoneIcon = styled(IoMdCloudDone)`
@@ -51,4 +59,35 @@ export const StyledDoneIcon = styled(IoMdCloudDone)`
   transition: ${({ theme }) => theme.transitions.regular};
   transition-duration: 2s;
   fill: ${({ theme }) => theme.colors.green};
+`;
+
+export const StyledUploadImg = styled(RiImageAddFill)`
+  width: 20px;
+  height: 20px;
+`;
+
+export const StyledLabel = styled.label`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing(3)};
+
+  padding: 12px 16px;
+  width: 100%;
+
+  resize: none;
+
+  outline: none;
+  border: ${({ theme }) => theme.borders.normal};
+  border-color: ${({ theme }) => theme.colors.blue};
+  border-radius: ${({ theme }) => theme.radii.xs};
+`;
+
+export const StyledUploadTxt = styled(RiFileUploadFill)`
+  width: 20px;
+  height: 20px;
+`;
+
+export const StyledInput = styled.input`
+  display: none;
 `;

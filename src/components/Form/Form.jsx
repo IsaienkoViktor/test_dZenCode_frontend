@@ -2,7 +2,15 @@ import PropTypes from "prop-types";
 import { Formik } from "formik";
 import { validationSchema } from "../../shared/validation/validationSchema";
 import { FormError } from "../../shared/components/FormError/FormError";
-import { FieldStyled, FormStyled, StyledDoneIcon } from "./Form.styled";
+import {
+  FieldStyled,
+  FormStyled,
+  StyledDoneIcon,
+  StyledInput,
+  StyledLabel,
+  StyledUploadImg,
+  StyledUploadTxt,
+} from "./Form.styled";
 import { Button } from "../../shared/components/Button/Button";
 import { addComment, addReply } from "../../services/api/api";
 import { ReplyButton } from "../../shared/components/ReplyButton/ReplyButton";
@@ -20,6 +28,8 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
     email: "",
     comment: "",
     homepage: "",
+    image: "",
+    textFile: "",
   };
 
   const getClassName = (touched, errors) => {
@@ -34,8 +44,6 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
 
   const applyTag = ({ tag, getFieldProps, handleChange }) => {
     const { name } = getFieldProps("comment");
-    console.log(name);
-
     const textarea = textareaRef.current;
     if (!textarea) return;
 
@@ -58,32 +66,44 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
   const allowedTags = ["a", "code", "i", "strong"];
 
   const handleSubmit = (values, { resetForm }) => {
-    const { userName, email, comment, homepage } = values;
+    const { userName, email, comment, homepage, image, textFile } = values;
+
     console.log(values);
+
     const sanitizedComment = DOMPurify.sanitize(comment, {
       ALLOWED_TAGS: allowedTags,
     });
-    console.log(sanitizedComment);
+
+    const formData = new FormData();
+
+    if (image) {
+      formData.append("image", image);
+    }
+
+    if (textFile) {
+      formData.append("textFile", textFile);
+    }
+
+    formData.append("userName", userName);
+    formData.append("email", email);
+    formData.append("homepage", homepage);
 
     if (variant === "reply") {
-      const reply = {
-        userName,
-        email,
-        reply: comment,
-        homepage,
-      };
-      addReply({ reply, commentId, replyToId });
+      formData.append("reply", sanitizedComment);
+
+      addReply({ reply: formData, commentId, replyToId }).catch((error) =>
+        console.log(error)
+      );
     } else {
-      addComment({ userName, email, text: sanitizedComment, homepage })
-        .then((data) => console.log(data))
-        .catch((error) => console.log(error));
+      formData.append("text", sanitizedComment);
+      addComment(formData).catch((error) => console.log(error));
     }
+
     resetForm();
     handleModalClose();
   };
 
   const handleFormSubmit = () => {
-    console.log(formikRef.current);
     if (formikRef.current) {
       formikRef.current.submitForm();
     }
@@ -104,6 +124,7 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
           values,
           handleChange,
           handleBlur,
+          setFieldValue,
         }) => (
           <FormStyled autoComplete="off">
             <FieldStyled
@@ -136,6 +157,40 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
             <ReplyButton
               applyTag={(tag) => applyTag({ tag, getFieldProps, handleChange })}
             />
+            <StyledLabel>
+              <span>{values.image ? "Reselect" : "Select"} Image</span>
+              <StyledUploadImg />
+              <StyledInput
+                type="file"
+                accept="image/png, image/jpeg, image/jpg, image/gif"
+                name="image"
+                className={getClassName(touched.image, errors.image)}
+                onBlur={handleBlur}
+                onChange={(event) => {
+                  console.log(event);
+                  setFieldValue("image", event.currentTarget.files[0]);
+                }}
+              />
+              {values.image && <p>{values.image.name}</p>}
+              <FormError name="image" touched={touched} errors={errors} />
+            </StyledLabel>
+            <StyledLabel>
+              <span>{values.textFile ? "Reselect" : "Select"} File</span>
+              <StyledUploadTxt />
+              <StyledInput
+                type="file"
+                name="textFile"
+                accept="text/plain"
+                className={getClassName(touched.textFile, errors.textFile)}
+                onBlur={handleBlur}
+                onChange={(event) => {
+                  console.log(event);
+                  setFieldValue("textFile", event.currentTarget.files[0]);
+                }}
+              />
+              {values.textFile && <p>{values.textFile.name}</p>}
+              <FormError name="textFile" touched={touched} errors={errors} />
+            </StyledLabel>
             <FieldStyled
               as="textarea"
               name="comment"
@@ -169,7 +224,6 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
     </>
   );
 };
-StyledDoneIcon;
 
 Form.propTypes = {
   commentId: PropTypes.string,

@@ -17,7 +17,6 @@ import {
 import { Reply } from "../Reply/Reply";
 import { Modal } from "../Modal/Modal";
 import { Form } from "../Form/Form";
-import Captcha from "../Captcha/Captcha";
 
 export const CommentSection = ({ data, commentId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,7 +45,6 @@ export const CommentSection = ({ data, commentId }) => {
     document.body.style.overflow = "auto";
   };
 
-  console.log(data.image);
   return (
     <>
       <StyledSection>
@@ -67,6 +65,7 @@ export const CommentSection = ({ data, commentId }) => {
               {data.replies.map((reply, index) => (
                 <Reply
                   reply={reply}
+                  imageSrc={imageSrc}
                   key={reply._id}
                   index={index}
                   handleModalOpen={handleModalOpen}
@@ -84,7 +83,6 @@ export const CommentSection = ({ data, commentId }) => {
             commentId={commentId}
             handleModalClose={handleModalClose}
           />
-          <Captcha />
         </Modal>
       )}
     </>

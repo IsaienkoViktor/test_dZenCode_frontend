@@ -4,6 +4,7 @@ import { MdFormatBold } from "react-icons/md";
 import { IoIosCode } from "react-icons/io";
 import { FiLink } from "react-icons/fi";
 import { CgFormatItalic } from "react-icons/cg";
+import { AiOutlineUpload } from "react-icons/ai";
 
 export const StyledButtonWrapper = styled.div`
   display: flex;
@@ -35,3 +36,6 @@ export const StyledCodeIcon = styled(IoIosCode)`
   width: 20px;
   height: 20px;
 `;
+
+export const StyledUploadBtn = styled(AiOutlineUpload);
+
