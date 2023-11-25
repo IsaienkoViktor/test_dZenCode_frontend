@@ -22,6 +22,10 @@ export const CommentSection = ({ data, commentId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [replyToId, setReplyToId] = useState("");
   const [imageSrc, setImageSrc] = useState(null);
+  const [textFile, setTextFile] = useState(null);
+
+  console.log(data);
+  console.log(data.textFile);
 
   useEffect(() => {
     if (data.image) {
@@ -31,8 +35,15 @@ export const CommentSection = ({ data, commentId }) => {
       )}`;
       setImageSrc(image);
     }
-  }, [data.image]);
 
+    if (data.textFile) {
+      const textFileBuffer = Buffer.from(data.textFile.buffer.data);
+      const textFile = `data:${
+        data.textFile.mimetype
+      };base64,${textFileBuffer.toString("base64")}`;
+      setTextFile(textFile);
+    }
+  }, [data.image, data.textFile]);
   const handleModalOpen = (id) => {
     document.body.style.overflow = "hidden";
     setReplyToId(id);
@@ -57,6 +68,11 @@ export const CommentSection = ({ data, commentId }) => {
               </StyledCommentHeader>
               <StyledMessage>{parse(data.text)}</StyledMessage>
               {imageSrc && <img src={imageSrc} alt={data.text} />}
+              {textFile && (
+                <a href={textFile} download>
+                  {data.textFile.originalname}
+                </a>
+              )}
               <StyledReplyBtn onClick={() => handleModalOpen(data._id)}>
                 <StyledReplyBtnIcon />
               </StyledReplyBtn>
