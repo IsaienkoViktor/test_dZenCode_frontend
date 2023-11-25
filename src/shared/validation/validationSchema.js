@@ -12,4 +12,26 @@ export const validationSchema = yup.object().shape({
     .required("required field"),
   comment: yup.string(),
   homepage: yup.string(),
+  image: yup
+    .mixed()
+    .test("fileType", "Unsupported Image Format", function (value) {
+      if (this.parent.image) {
+        return (
+          value &&
+          (value.name.endsWith(".png") ||
+            value.name.endsWith(".jpg") ||
+            value.name.endsWith(".gif") ||
+            value.name.endsWith(".jpeg"))
+        );
+      }
+      return true;
+    }),
+  textFile: yup
+    .mixed()
+    .test("fileType", "Unsupported File Format", function (value) {
+      if (this.parent.textFile) {
+        return value && value.name.endsWith(".txt");
+      }
+      return true;
+    }),
 });

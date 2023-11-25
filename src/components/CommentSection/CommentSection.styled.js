@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { FaCommentDots } from "react-icons/fa";
 
+
 export const StyledSection = styled.section`
   padding-top: ${({ theme }) => theme.spacing(10)};
   padding-bottom: ${({ theme }) => theme.spacing(5)};

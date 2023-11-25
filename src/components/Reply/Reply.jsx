@@ -11,7 +11,7 @@ import {
 } from "./Reply.styled";
 import { formatDate } from "../../helpers/formatDate";
 
-export const Reply = ({ reply, index, handleModalOpen }) => {
+export const Reply = ({ reply, index, handleModalOpen, imageSrc }) => {
   return (
     <StyledReply $index={index + 1}>
       <StyledReplyHeader>
@@ -21,6 +21,7 @@ export const Reply = ({ reply, index, handleModalOpen }) => {
       <StyledBottomBar>
         <StyledReplyTo>
           <StyledReplyMessage>{parse(reply.replyTo.text)}</StyledReplyMessage>
+          {imageSrc && <img src={imageSrc} width={50} height={50} />}
         </StyledReplyTo>
         <p>{parse(reply.reply)}</p>
         <StyledReplyBtn onClick={() => handleModalOpen(reply._id)}>
@@ -32,18 +33,19 @@ export const Reply = ({ reply, index, handleModalOpen }) => {
 };
 
 Reply.propTypes = {
+  handleModalOpen: PropTypes.func,
+  imageSrc: PropTypes.string,
+  index: PropTypes.number.isRequired,
   reply: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
+    mainCommentId: PropTypes.string.isRequired,
     reply: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
     replyTo: PropTypes.shape({
       _id: PropTypes.string,
       text: PropTypes.string.isRequired,
     }).isRequired,
-    mainCommentId: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
   }),
-  index: PropTypes.number.isRequired,
-  handleModalOpen: PropTypes.func,
 };
