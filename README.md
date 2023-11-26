@@ -53,3 +53,11 @@
 - [react-router-dom](https://reactrouter.com/web/guides/quick-start) ^6.19.0
 - [styled-components](https://styled-components.com/) ^6.1.1
 - [yup](https://www.npmjs.com/package/yup) ^1.3.2
+
+## 🚀 Розгортання проєкту
+
+1. Склонуйте репозиторій: `https://github.com/IsaienkoViktor/test_dZenCode_frontend`
+2. Перейдіть до папки проєкту: `cd test_dZenCode_frontend`
+3. Встановіть залежності: `npm install` or `yarn install`
+4. Запустіть додаток: `npm run dev` or ` yarn dev`
+5. Переглядайте веб-сайт локально за посиланням: `http://localhost:5173`
