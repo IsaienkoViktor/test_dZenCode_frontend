@@ -6,7 +6,7 @@ import { Button } from "../../shared/components/Button/Button";
 import { Modal } from "../../components/Modal/Modal";
 import { Form } from "../../components/Form/Form";
 import { PageWrapper } from "./Homepage.styled";
-import Captcha from "../../components/Captcha/Captcha";
+import { Pagination } from "../../components/Pagination/Pagination";
 
 const HomePage = () => {
   const [page, setPage] = useState(1);
@@ -15,7 +15,22 @@ const HomePage = () => {
   const [createdAt, setCreatedAt] = useState("asc");
   const [comments, setComments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    getAllComments({
+      page,
+      limit: 25,
+      userName,
+      email,
+      createdAt,
+    })
+      .then((data) => {
+        setComments(data.data);
+        setTotal(data.total);
+      })
+      .catch((error) => console.log(error));
+  }, [createdAt, email, page, userName]);
 
   const setters = {
     userName: setUserName,
@@ -33,33 +48,28 @@ const HomePage = () => {
     setIsModalOpen((prev) => !prev);
     document.body.style.overflow = "auto";
   };
-
-  useEffect(() => {
-    getAllComments({
-      page,
-      limit: 25,
-      userName,
-      email,
-      createdAt,
-    })
-      .then((data) => setComments(data))
-      .catch((error) => console.log(error));
-  }, [createdAt, email, page, userName]);
+  const handlePageChange = (selectedPage) => {
+    setPage(selectedPage);
+  };
 
   return (
     <Container>
       <PageWrapper>
-        <CommentsTable data={comments} values={values} setters={setters} />
         <Button
           text="Add your comment"
           type="button"
           onClick={handleModalOpen}
         />
+        <CommentsTable data={comments} values={values} setters={setters} />
+        <Pagination
+          onPageChange={handlePageChange}
+          totalItems={total}
+          currentPage={page}
+          perPage={25}
+        />
         {isModalOpen && (
           <Modal onClose={handleModalClose}>
-            <Form
-              handleModalClose={handleModalClose}              
-            />            
+            <Form handleModalClose={handleModalClose} />
           </Modal>
         )}
       </PageWrapper>

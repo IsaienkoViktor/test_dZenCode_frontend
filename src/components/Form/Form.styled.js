@@ -91,3 +91,25 @@ export const StyledUploadTxt = styled(RiFileUploadFill)`
 export const StyledInput = styled.input`
   display: none;
 `;
+
+export const StyledPreviewWrapper = styled.div`
+  /* display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing(4)}; */
+
+  margin-bottom: ${({ theme }) => theme.spacing(3)};
+  padding: ${({ theme }) => theme.spacing(4)};
+
+  border-radius: ${({ theme }) => theme.radii.xs};
+  border: ${({ theme }) => theme.borders.medium};
+  border-color: ${({ theme }) => theme.colors.grey};
+`;
+
+export const StyledPreviewTitle = styled.h3`
+  margin-bottom: ${({ theme }) => theme.spacing(3)};
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  color: ${({ theme }) => theme.colors.grey};
+  text-align: center;
+`;
+
+export const StyledPreviewText = styled.p``;

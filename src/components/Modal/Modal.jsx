@@ -10,7 +10,7 @@ import {
 
 const modalRoot = document.querySelector("#modal-root");
 
-export const Modal = ({ children, onClose }) => {
+export const Modal = ({ children, onClose, variant }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.code === "Escape") {
@@ -39,10 +39,12 @@ export const Modal = ({ children, onClose }) => {
 
   return createPortal(
     <Backdrop onClick={handleClickBackdrop}>
-      <ModalStyled>
-        <ButtonCloseModal aria-label="close modal" onClick={handleCloseModal}>
-          <StyledCloseIcon />
-        </ButtonCloseModal>
+      <ModalStyled $variant={variant}>
+        {variant !== "image" && (
+          <ButtonCloseModal aria-label="close modal" onClick={handleCloseModal}>
+            <StyledCloseIcon />
+          </ButtonCloseModal>
+        )}
         {children}
       </ModalStyled>
     </Backdrop>,
@@ -53,4 +55,5 @@ export const Modal = ({ children, onClose }) => {
 Modal.propTypes = {
   children: PropTypes.node.isRequired,
   onClose: PropTypes.func.isRequired,
+  variant: PropTypes.string,
 };
