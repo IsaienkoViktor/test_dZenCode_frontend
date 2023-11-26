@@ -5,8 +5,12 @@ import { Buffer } from "buffer";
 import { useEffect, useState } from "react";
 import { formatDate } from "../../helpers/formatDate";
 import {
+  StyledAttachedFiles,
   StyledComment,
   StyledCommentHeader,
+  StyledCommentWrapper,
+  StyledFile,
+  StyledImg,
   StyledList,
   StyledMessage,
   StyledReplyBtn,
@@ -23,9 +27,7 @@ export const CommentSection = ({ data, commentId }) => {
   const [replyToId, setReplyToId] = useState("");
   const [imageSrc, setImageSrc] = useState(null);
   const [textFile, setTextFile] = useState(null);
-
-  console.log(data);
-  console.log(data.textFile);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   useEffect(() => {
     if (data.image) {
@@ -44,6 +46,17 @@ export const CommentSection = ({ data, commentId }) => {
       setTextFile(textFile);
     }
   }, [data.image, data.textFile]);
+
+  const handleImageModalOpen = () => {
+    document.body.style.overflow = "hidden";
+    setIsImageModalOpen((prev) => !prev);
+  };
+
+  const handleImageModalClose = () => {
+    document.body.style.overflow = "auto";
+    setIsImageModalOpen((prev) => !prev);
+  };
+
   const handleModalOpen = (id) => {
     document.body.style.overflow = "hidden";
     setReplyToId(id);
@@ -66,16 +79,28 @@ export const CommentSection = ({ data, commentId }) => {
                 <StyledUserName>{data.userName}</StyledUserName>
                 <p>{formatDate(data.createdAt)}</p>
               </StyledCommentHeader>
-              <StyledMessage>{parse(data.text)}</StyledMessage>
-              {imageSrc && <img src={imageSrc} alt={data.text} />}
-              {textFile && (
-                <a href={textFile} download>
-                  {data.textFile.originalname}
-                </a>
-              )}
-              <StyledReplyBtn onClick={() => handleModalOpen(data._id)}>
-                <StyledReplyBtnIcon />
-              </StyledReplyBtn>
+              <StyledCommentWrapper>
+                <StyledMessage>{parse(data.text)}</StyledMessage>
+                {(imageSrc || textFile) && (
+                  <StyledAttachedFiles>
+                    {imageSrc && (
+                      <StyledImg
+                        onClick={handleImageModalOpen}
+                        src={imageSrc}
+                        alt={data.text}
+                      />
+                    )}
+                    {textFile && (
+                      <StyledFile href={textFile} download>
+                        {data.textFile.originalname}
+                      </StyledFile>
+                    )}
+                  </StyledAttachedFiles>
+                )}
+                <StyledReplyBtn onClick={() => handleModalOpen(data._id)}>
+                  <StyledReplyBtnIcon />
+                </StyledReplyBtn>
+              </StyledCommentWrapper>
             </StyledComment>
             <StyledList>
               {data.replies.map((reply, index) => (
@@ -101,6 +126,11 @@ export const CommentSection = ({ data, commentId }) => {
           />
         </Modal>
       )}
+      {isImageModalOpen && (
+        <Modal onClose={handleImageModalClose} variant="image">
+          <StyledImg src={imageSrc} alt={data.text} $variant="modal" />
+        </Modal>
+      )}
     </>
   );
 };
@@ -118,6 +148,13 @@ CommentSection.propTypes = {
     }),
     replies: PropTypes.array.isRequired,
     text: PropTypes.string.isRequired,
+    textFile: PropTypes.shape({
+      buffer: PropTypes.shape({
+        data: PropTypes.any,
+      }),
+      mimetype: PropTypes.any,
+      originalname: PropTypes.any,
+    }),
     userName: PropTypes.string.isRequired,
   }).isRequired,
 };

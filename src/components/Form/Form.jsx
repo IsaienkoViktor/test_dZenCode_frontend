@@ -1,27 +1,34 @@
+import { useRef, useState } from "react";
+import parse from "html-react-parser";
 import PropTypes from "prop-types";
+import DOMPurify from "dompurify";
 import { Formik } from "formik";
 import { validationSchema } from "../../shared/validation/validationSchema";
 import { FormError } from "../../shared/components/FormError/FormError";
+import Captcha from "../Captcha/Captcha";
+import { Button } from "../../shared/components/Button/Button";
+import { addComment, addReply } from "../../services/api/api";
+import { ReplyButton } from "../../shared/components/ReplyButton/ReplyButton";
+
 import {
   FieldStyled,
   FormStyled,
   StyledDoneIcon,
   StyledInput,
   StyledLabel,
+  StyledPreviewText,
+  StyledPreviewTitle,
+  StyledPreviewWrapper,
   StyledUploadImg,
   StyledUploadTxt,
 } from "./Form.styled";
-import { Button } from "../../shared/components/Button/Button";
-import { addComment, addReply } from "../../services/api/api";
-import { ReplyButton } from "../../shared/components/ReplyButton/ReplyButton";
-import { useRef, useState } from "react";
-import DOMPurify from "dompurify";
-import Captcha from "../Captcha/Captcha";
+import { allowedTags } from "../../shared/constants/regexp";
 
 export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
   const formikRef = useRef(null);
   const textareaRef = useRef(null);
   const [isCaptchaPassed, setIsCaptchaPassed] = useState(false);
+  const [commentPreview, setCommentPreview] = useState("");
 
   const initialValues = {
     userName: "",
@@ -30,6 +37,15 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
     homepage: "",
     image: "",
     textFile: "",
+  };
+
+  const validateAndSanitizeComment = (comment) => {
+    const cleanComment = DOMPurify.sanitize(comment, {
+      ALLOWED_TAGS: ["a", "code", "i", "strong"],
+      ALLOWED_ATTR: ["href", "title"],
+    });
+
+    return cleanComment;
   };
 
   const getClassName = (touched, errors) => {
@@ -63,10 +79,16 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
 
     textarea.value = newValue;
   };
-  const allowedTags = ["a", "code", "i", "strong"];
 
   const handleSubmit = (values, { resetForm }) => {
     const { userName, email, comment, homepage, image, textFile } = values;
+
+    const checkedSanitizedComment = validateAndSanitizeComment(comment);
+
+    if (checkedSanitizedComment !== comment) {
+      alert("Your comment contains invalid or not allowed HTML tags.");
+      return;
+    }
 
     console.log(values);
 
@@ -109,6 +131,12 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
     }
   };
 
+  const handlePreview = () => {
+    const currentComment = formikRef.current.values.comment;
+
+    const previewHtml = validateAndSanitizeComment(currentComment);
+    setCommentPreview(previewHtml);
+  };
   return (
     <>
       <Formik
@@ -215,6 +243,19 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
           isCaptchaPassed={isCaptchaPassed}
         />
       )}
+      {commentPreview && (
+        <StyledPreviewWrapper>
+          <StyledPreviewTitle>Preview:</StyledPreviewTitle>
+          <StyledPreviewText>{parse(commentPreview)}</StyledPreviewText>
+        </StyledPreviewWrapper>
+      )}
+      <Button
+        type="button"
+        text="Preview comment"
+        disabled={!isCaptchaPassed}
+        variant="preview"
+        onClick={handlePreview}
+      />
       <Button
         type="button"
         text="Leave comment"

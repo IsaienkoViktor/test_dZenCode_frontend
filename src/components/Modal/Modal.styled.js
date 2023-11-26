@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { IoCloseOutline } from "react-icons/io5";
 
 export const Backdrop = styled.div`
@@ -16,7 +16,7 @@ export const ModalStyled = styled.div`
   min-width: ${({ theme }) => theme.spacing(125)};
   min-height: ${({ theme }) => theme.spacing(71.75)};
 
-  background: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   border-radius: ${({ theme }) => theme.spacing(5)};
 
   display: flex;
@@ -28,6 +28,14 @@ export const ModalStyled = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
+  ${({ $variant }) =>
+    $variant === "image" &&
+    css`
+      background-color: transparent;
+      padding: 0;
+      border-radius: none;
+    `};
 `;
 
 export const StyledCloseIcon = styled(IoCloseOutline)`

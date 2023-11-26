@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const StyledButton = styled.button`
   display: flex;
@@ -25,4 +25,22 @@ export const StyledButton = styled.button`
       transform: scale(1);
     }
   }
+
+  ${({ $variant }) =>
+    $variant === "preview" &&
+    css`
+      margin-bottom: ${({ theme }) => theme.spacing(3)};
+      border: ${({ theme }) => theme.borders.normal};
+      border-color: ${({ theme }) => theme.colors.green};
+      color: ${({ theme }) => theme.colors.green};
+      background-color: transparent;
+
+      &:disabled {
+        opacity: 0.5;
+        &:hover,
+        &:focus {
+          transform: scale(1);
+        }
+      }
+    `};
 `;
