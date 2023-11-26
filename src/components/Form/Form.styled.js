@@ -1,7 +1,6 @@
 import { Field, Form } from "formik";
 import styled, { css } from "styled-components";
 import { IoMdCloudDone } from "react-icons/io";
-import { AiOutlineUpload } from "react-icons/ai";
 import { RiFileUploadFill } from "react-icons/ri";
 import { RiImageAddFill } from "react-icons/ri";
 
@@ -41,11 +40,6 @@ export const FieldStyled = styled(Field)`
     css`
       height: 100px;
     `};
-  /* ${({ $variant }) =>
-    $variant === "hidden" &&
-    css`
-      display: none;
-    `}; */
 `;
 
 export const StyledDoneIcon = styled(IoMdCloudDone)`
@@ -93,10 +87,6 @@ export const StyledInput = styled.input`
 `;
 
 export const StyledPreviewWrapper = styled.div`
-  /* display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(4)}; */
-
   margin-bottom: ${({ theme }) => theme.spacing(3)};
   padding: ${({ theme }) => theme.spacing(4)};
 

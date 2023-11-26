@@ -1,16 +1,12 @@
 import PropTypes from "prop-types";
 import parse from "html-react-parser";
-import { Buffer } from "buffer";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { formatDate } from "../../helpers/formatDate";
 import {
-  StyledAttachedFiles,
   StyledComment,
   StyledCommentHeader,
   StyledCommentWrapper,
-  StyledFile,
-  StyledImg,
   StyledList,
   StyledMessage,
   StyledReplyBtn,
@@ -21,41 +17,11 @@ import {
 import { Reply } from "../Reply/Reply";
 import { Modal } from "../Modal/Modal";
 import { Form } from "../Form/Form";
+import { AttachedFiles } from "../AttachedFiles/AttachedFiles";
 
-export const CommentSection = ({ data, commentId }) => {
+export const CommentSection = ({ data, commentId, setComment }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [replyToId, setReplyToId] = useState("");
-  const [imageSrc, setImageSrc] = useState(null);
-  const [textFile, setTextFile] = useState(null);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (data.image) {
-      const buffer = Buffer.from(data.image.buffer.data);
-      const image = `data:${data.image.mimetype};base64,${buffer.toString(
-        "base64"
-      )}`;
-      setImageSrc(image);
-    }
-
-    if (data.textFile) {
-      const textFileBuffer = Buffer.from(data.textFile.buffer.data);
-      const textFile = `data:${
-        data.textFile.mimetype
-      };base64,${textFileBuffer.toString("base64")}`;
-      setTextFile(textFile);
-    }
-  }, [data.image, data.textFile]);
-
-  const handleImageModalOpen = () => {
-    document.body.style.overflow = "hidden";
-    setIsImageModalOpen((prev) => !prev);
-  };
-
-  const handleImageModalClose = () => {
-    document.body.style.overflow = "auto";
-    setIsImageModalOpen((prev) => !prev);
-  };
 
   const handleModalOpen = (id) => {
     document.body.style.overflow = "hidden";
@@ -81,21 +47,8 @@ export const CommentSection = ({ data, commentId }) => {
               </StyledCommentHeader>
               <StyledCommentWrapper>
                 <StyledMessage>{parse(data.text)}</StyledMessage>
-                {(imageSrc || textFile) && (
-                  <StyledAttachedFiles>
-                    {imageSrc && (
-                      <StyledImg
-                        onClick={handleImageModalOpen}
-                        src={imageSrc}
-                        alt={data.text}
-                      />
-                    )}
-                    {textFile && (
-                      <StyledFile href={textFile} download>
-                        {data.textFile.originalname}
-                      </StyledFile>
-                    )}
-                  </StyledAttachedFiles>
+                {(data.image || data.textFile) && (
+                  <AttachedFiles image={data.image} file={data.textFile} />
                 )}
                 <StyledReplyBtn onClick={() => handleModalOpen(data._id)}>
                   <StyledReplyBtnIcon />
@@ -106,7 +59,6 @@ export const CommentSection = ({ data, commentId }) => {
               {data.replies.map((reply, index) => (
                 <Reply
                   reply={reply}
-                  imageSrc={imageSrc}
                   key={reply._id}
                   index={index}
                   handleModalOpen={handleModalOpen}
@@ -123,12 +75,8 @@ export const CommentSection = ({ data, commentId }) => {
             replyToId={replyToId}
             commentId={commentId}
             handleModalClose={handleModalClose}
+            setComment={setComment}
           />
-        </Modal>
-      )}
-      {isImageModalOpen && (
-        <Modal onClose={handleImageModalClose} variant="image">
-          <StyledImg src={imageSrc} alt={data.text} $variant="modal" />
         </Modal>
       )}
     </>
@@ -142,19 +90,20 @@ CommentSection.propTypes = {
     createdAt: PropTypes.string.isRequired,
     image: PropTypes.shape({
       buffer: PropTypes.shape({
-        data: PropTypes.any,
+        data: PropTypes.array,
       }),
-      mimetype: PropTypes.any,
+      mimetype: PropTypes.string,
     }),
     replies: PropTypes.array.isRequired,
     text: PropTypes.string.isRequired,
     textFile: PropTypes.shape({
       buffer: PropTypes.shape({
-        data: PropTypes.any,
+        data: PropTypes.array,
       }),
-      mimetype: PropTypes.any,
-      originalname: PropTypes.any,
+      mimetype: PropTypes.string,
+      originalname: PropTypes.string,
     }),
     userName: PropTypes.string.isRequired,
   }).isRequired,
+  setComment: PropTypes.func,
 };
