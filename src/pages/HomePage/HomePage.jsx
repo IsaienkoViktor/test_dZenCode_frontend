@@ -60,7 +60,9 @@ const HomePage = () => {
           type="button"
           onClick={handleModalOpen}
         />
-        <CommentsTable data={comments} values={values} setters={setters} />
+        {comments.length > 0 && (
+          <CommentsTable data={comments} values={values} setters={setters} />
+        )}
         <Pagination
           onPageChange={handlePageChange}
           totalItems={total}
@@ -69,7 +71,12 @@ const HomePage = () => {
         />
         {isModalOpen && (
           <Modal onClose={handleModalClose}>
-            <Form handleModalClose={handleModalClose} />
+            <Form
+              handleModalClose={handleModalClose}
+              setComments={setComments}
+              setTotal={setTotal}
+              page={page}
+            />
           </Modal>
         )}
       </PageWrapper>

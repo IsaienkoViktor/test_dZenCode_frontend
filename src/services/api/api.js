@@ -5,15 +5,9 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-export const getAllComments = async ({
-  page,
-  limit,
-  userName,
-  email,
-  createdAt,
-}) => {
+export const getAllComments = async (params) => {
   const { data } = await instance.get("/comment/all", {
-    params: { page, limit, userName, email, createdAt },
+    params,
   });
   return data;
 };

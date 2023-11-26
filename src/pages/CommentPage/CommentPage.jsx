@@ -18,7 +18,11 @@ const CommentPage = () => {
   return (
     <Container>
       {comment ? (
-        <CommentSection data={comment} commentId={params?.id} />
+        <CommentSection
+          data={comment}
+          commentId={params?.id}
+          setComment={setComment}
+        />
       ) : (
         <Loader />
       )}

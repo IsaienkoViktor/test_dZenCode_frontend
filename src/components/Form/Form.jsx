@@ -7,7 +7,12 @@ import { validationSchema } from "../../shared/validation/validationSchema";
 import { FormError } from "../../shared/components/FormError/FormError";
 import Captcha from "../Captcha/Captcha";
 import { Button } from "../../shared/components/Button/Button";
-import { addComment, addReply } from "../../services/api/api";
+import {
+  addComment,
+  addReply,
+  getAllComments,
+  getCommentById,
+} from "../../services/api/api";
 import { ReplyButton } from "../../shared/components/ReplyButton/ReplyButton";
 
 import {
@@ -24,7 +29,16 @@ import {
 } from "./Form.styled";
 import { allowedTags } from "../../shared/constants/regexp";
 
-export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
+export const Form = ({
+  variant,
+  replyToId,
+  commentId,
+  handleModalClose,
+  setComments,
+  setTotal,
+  setComment,
+  page,
+}) => {
   const formikRef = useRef(null);
   const textareaRef = useRef(null);
   const [isCaptchaPassed, setIsCaptchaPassed] = useState(false);
@@ -90,8 +104,6 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
       return;
     }
 
-    console.log(values);
-
     const sanitizedComment = DOMPurify.sanitize(comment, {
       ALLOWED_TAGS: allowedTags,
     });
@@ -113,16 +125,32 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
     if (variant === "reply") {
       formData.append("reply", sanitizedComment);
 
-      addReply({ reply: formData, commentId, replyToId }).catch((error) =>
-        console.log(error)
-      );
+      addReply({ reply: formData, commentId, replyToId })
+        .then(() =>
+          getCommentById(commentId)
+            .then((data) => {
+              setComment(data);
+              resetForm();
+              handleModalClose();
+            })
+            .catch((error) => console.log(error))
+        )
+        .catch((error) => console.log(error));
     } else {
       formData.append("text", sanitizedComment);
-      addComment(formData).catch((error) => console.log(error));
+      addComment(formData)
+        .then(() =>
+          getAllComments({ page, limit: 25 })
+            .then((data) => {
+              setComments(data.data);
+              setTotal(data.total);
+              resetForm();
+              handleModalClose();
+            })
+            .catch((error) => console.log(error))
+        )
+        .catch((error) => console.log(error));
     }
-
-    resetForm();
-    handleModalClose();
   };
 
   const handleFormSubmit = () => {
@@ -195,7 +223,6 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
                 className={getClassName(touched.image, errors.image)}
                 onBlur={handleBlur}
                 onChange={(event) => {
-                  console.log(event);
                   setFieldValue("image", event.currentTarget.files[0]);
                 }}
               />
@@ -212,7 +239,6 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
                 className={getClassName(touched.textFile, errors.textFile)}
                 onBlur={handleBlur}
                 onChange={(event) => {
-                  console.log(event);
                   setFieldValue("textFile", event.currentTarget.files[0]);
                 }}
               />
@@ -269,6 +295,10 @@ export const Form = ({ variant, replyToId, commentId, handleModalClose }) => {
 Form.propTypes = {
   commentId: PropTypes.string,
   handleModalClose: PropTypes.func,
+  page: PropTypes.number,
   replyToId: PropTypes.string,
+  setComment: PropTypes.func,
+  setComments: PropTypes.func,
+  setTotal: PropTypes.func,
   variant: PropTypes.string,
 };
